@@ -1,0 +1,1361 @@
+[
+  {
+    "id": "wan-2-2",
+    "name": "Wan 2.2",
+    "version": "2.2",
+    "maker": "Alibaba (Tongyi Lab)",
+    "sourceType": "Open Source",
+    "license": "Apache 2.0",
+    "released": "Early 2026",
+    "architecture": "DiT + MoE (2-expert: high-noise + low-noise)",
+    "parameters": "27B total (14B active per step, 2x14B experts)",
+    "maxResolution": "720p",
+    "maxDuration": "10-15s",
+    "fps": "24",
+    "nativeAudio": false,
+    "comfyUISupport": true,
+    "finetuneable": true,
+    "minVRAM": "8GB (small) / 24GB (full)",
+    "costPerSecond": "Self-host",
+    "inputsSupported": "T2V (A14B), I2V (A14B), TI2V (5B), S2V (14B)",
+    "tier": "A",
+    "onFloyo": true,
+    "scores": {
+      "quality": 7,
+      "motion": 7.5,
+      "speed": 9,
+      "control": 7,
+      "audio": 0,
+      "value": 10
+    },
+    "strengths": [
+      "First MoE in video diffusion",
+      "27B total but only 14B active per step",
+      "high-noise expert for layout + low-noise for detail",
+      "+65.6% more images and +83.2% more video training data vs 2.1",
+      "cinematic aesthetic control (lighting, composition, contrast, color tone)",
+      "TI2V-5B runs on consumer 4090",
+      "S2V (speech-to-video) support",
+      "TOP on Wan-Bench 2.0 vs all open and closed models"
+    ],
+    "weaknesses": [
+      "720p cap",
+      "MoE needs careful threshold tuning (SNR-based)",
+      "no native audio in base model (S2V is separate)",
+      "newer ecosystem than 2.1"
+    ],
+    "bestFor": [
+      "Self-hosted production",
+      "cinematic style control",
+      "speech-to-video",
+      "consumer GPU deployment (TI2V-5B)",
+      "academic research"
+    ],
+    "verdict": "MoE architecture with 27B total params but only 14B active. Trained on 65% more images and 83% more video than 2.1. Outperforms leading closed-source models on Wan-Bench 2.0.",
+    "workflows": [
+      {
+        "name": "Wan 2.2 Animate Preprocess (Kijai)",
+        "type": "Preprocessing",
+        "url": "https://www.floyo.ai/workflows/wan-2-2-animate-preprocess-by-kijai--oh2i9d7go03r",
+        "description": "Preprocessing workflow by Kijai for Wan 2.2 animation pipelines. Prepares input data for downstream Wan 2.2 video generation workflows.",
+        "runs": "",
+        "status": "Live"
+      },
+      {
+        "name": "Wan 2.2 + Qwen V2V Restyle",
+        "type": "V2V",
+        "url": "https://www.floyo.ai/workflows/wan-2-2-and-qwen-for-v2v-restyle-4jwb6th8037v",
+        "description": "Video-to-video restyling combining Wan 2.2 with Qwen. Transform existing video footage into a new visual style while preserving the original motion and composition.",
+        "runs": "",
+        "status": "Live"
+      },
+      {
+        "name": "Wan 2.2 T2V with UnifiedRew",
+        "type": "T2V",
+        "url": "https://www.floyo.ai/workflows/wan-2-2-t2v-workflow-with-unifiedrew-jid2zo1q3tsj",
+        "description": "Text-to-video workflow using Wan 2.2 with UnifiedRew integration for enhanced generation quality and consistency.",
+        "runs": "",
+        "status": "Live"
+      },
+      {
+        "name": "Wan 2.2 Animate Character Replacement",
+        "type": "Character",
+        "url": "https://www.floyo.ai/workflows/wan-2-2-animate-character-replacemen-b7m7x1s433of",
+        "description": "Replace characters in animated sequences using Wan 2.2. Swap subjects while maintaining the original motion, timing, and scene composition.",
+        "runs": "",
+        "status": "Live"
+      },
+      {
+        "name": "Wan 2.2-Animate (Animation Mode)",
+        "type": "Character Animation",
+        "url": "https://wan.video/blog/wan2.2-animate",
+        "description": "Given a character image and a reference video, generates high-fidelity character animation by replicating facial expressions and body movements. Uses spatially aligned skeletal signals for body motion and extracts implicit facial features from the source image for expressions. Built on the Wan model with an improved input paradigm that separates reference conditions from generated regions.",
+        "runs": "",
+        "status": "Available (open-source)"
+      },
+      {
+        "name": "Wan 2.2-Animate (Replacement Mode)",
+        "type": "Character Replacement",
+        "url": "https://wan.video/blog/wan2.2-animate",
+        "description": "Seamlessly integrates a character into an existing reference video, replacing the original character while matching the scene's lighting and color style. Includes an auxiliary relighting LoRA module that applies environmental lighting and color tones while preserving the character's appearance consistency. Outperforms existing open and closed-source models for character replacement within the same scene.",
+        "runs": "",
+        "status": "Available (open-source)"
+      }
+    ]
+  },
+  {
+    "id": "ltx-2-3",
+    "name": "LTX-2.3",
+    "version": "2.3",
+    "maker": "Lightricks",
+    "sourceType": "Open Source",
+    "license": "Apache 2.0 (<$10M rev)",
+    "released": "Mar 2026",
+    "architecture": "DiT (22B) + Rebuilt VAE",
+    "parameters": "22B",
+    "maxResolution": "4K",
+    "maxDuration": "20s",
+    "fps": "Up to 50",
+    "nativeAudio": true,
+    "comfyUISupport": true,
+    "finetuneable": true,
+    "minVRAM": "32GB (full) / 12GB (distilled)",
+    "costPerSecond": "$0.04",
+    "inputsSupported": "T2V, I2V, V2V, Audio-cond",
+    "tier": "S",
+    "onFloyo": true,
+    "scores": {
+      "quality": 8.5,
+      "motion": 8,
+      "speed": 8,
+      "control": 8.5,
+      "audio": 7.5,
+      "value": 10
+    },
+    "strengths": [
+      "22B params",
+      "true 4K at 50fps",
+      "first open model with synced audio",
+      "rebuilt VAE",
+      "native portrait",
+      "4 variants"
+    ],
+    "weaknesses": [
+      "Full 4K needs 48GB",
+      "dialogue lip-sync inconsistent",
+      "in-scene text flaky"
+    ],
+    "bestFor": [
+      "Local 4K production",
+      "open-source audio-video",
+      "studios needing IP control"
+    ],
+    "verdict": "The open-source flagship. First open model to close the gap with proprietary leaders.",
+    "workflows": [
+      {
+        "name": "LTX 2.3 Pro Image to Video",
+        "type": "I2V",
+        "url": "https://www.floyo.ai/workflows/ltx-2-3-pro-image-to-video-bhi8xfzbdrth",
+        "description": "Upload a still image and describe the motion you want. The model reads composition, lighting, and depth from your image, then animates it with prompt-controlled camera moves, particle effects, and environmental dynamics. Supports optional end-frame for locked start/finish transitions. Up to 2160p with built-in audio generation.",
+        "runs": "1.0k",
+        "status": "Live"
+      },
+      {
+        "name": "LTX 2.3 Audio to Video",
+        "type": "A2V",
+        "url": "https://www.floyo.ai/workflows/ltx-2-3-audio-to-video-evee1xhpoibj",
+        "description": "Feed in an audio file and the model generates video that follows the rhythm, intensity, and structure of the sound. Works with music, speech, or sound effects. Fully automated pipeline with no manual parameter tuning required. Ideal for music visuals, audio-reactive content, and quick audio-driven animations.",
+        "runs": "124",
+        "status": "Live"
+      },
+      {
+        "name": "LTX 2.3 Pro Text to Video",
+        "type": "T2V",
+        "url": "https://www.floyo.ai/workflows/ltx-2-3-pro-text-to-video-kfmwgvai9wq0",
+        "description": "Generate video from a text prompt using the Pro flow. Higher fidelity output with enhanced detail and stability across longer sequences. Supports resolutions up to 4K, multiple FPS options (24/25/48/50), and durations up to 20 seconds. Built-in audio generation included.",
+        "runs": "101",
+        "status": "Live"
+      },
+      {
+        "name": "LTX 2.3 T2V (Community)",
+        "type": "T2V",
+        "url": "https://www.floyo.ai/workflows/ltx-2-3-t2v-qgaw80lfuhbx",
+        "description": "Community-built text-to-video workflow using LTX 2.3. Lightweight setup for quick text prompt to video generation.",
+        "runs": "47",
+        "status": "Live"
+      }
+    ]
+  },
+  {
+    "id": "hunyuanvideo-1-5",
+    "name": "HunyuanVideo 1.5",
+    "version": "1.5",
+    "maker": "Tencent",
+    "sourceType": "Open Source",
+    "license": "Tencent Open (check terms)",
+    "released": "Nov 2025",
+    "architecture": "DiT + 3D Causal VAE",
+    "parameters": "8.3B",
+    "maxResolution": "720p",
+    "maxDuration": "6-10s",
+    "fps": "24",
+    "nativeAudio": false,
+    "comfyUISupport": true,
+    "finetuneable": true,
+    "minVRAM": "24GB (RTX 4090)",
+    "costPerSecond": "$0.06",
+    "inputsSupported": "T2V, I2V, Avatar",
+    "tier": "B",
+    "onFloyo": true,
+    "scores": {
+      "quality": 7,
+      "motion": 7,
+      "speed": 8,
+      "control": 6.5,
+      "audio": 0,
+      "value": 8.5
+    },
+    "strengths": [
+      "Efficient 8.3B params",
+      "~75s on 4090",
+      "Avatar + Custom variants"
+    ],
+    "weaknesses": [
+      "Short output",
+      "720p max",
+      "no audio"
+    ],
+    "bestFor": [
+      "Avatar gen",
+      "custom characters",
+      "research",
+      "consumer GPU"
+    ],
+    "verdict": "Punches above its weight. Avatar and Custom variants add versatility.",
+    "workflows": [
+      {
+        "name": "HunyuanVideo Foley (Lifelike Audio)",
+        "type": "Audio/Foley",
+        "url": "https://www.floyo.ai/workflows/-hunyuanvideo-foley-create-a-lifelik-cguw8zibxe1n",
+        "description": "Generate lifelike foley and sound effects that match HunyuanVideo output. Creates ambient audio, environmental sounds, and effects synchronized to the visual content.",
+        "runs": "",
+        "status": "Live"
+      },
+      {
+        "name": "HunyuanVideo 1.5 Image to Video",
+        "type": "I2V",
+        "url": "https://www.floyo.ai/workflows/hunyuanvideo-1-5-for-image-to-video-tng1y8zpr9ug",
+        "description": "Animate still images using HunyuanVideo 1.5's image-to-video capability. The 8.3B parameter model preserves subject identity and scene composition while adding natural motion.",
+        "runs": "",
+        "status": "Live"
+      }
+    ]
+  },
+  {
+    "id": "mochi-1",
+    "name": "Mochi 1",
+    "version": "1.0",
+    "maker": "Genmo",
+    "sourceType": "Open Source",
+    "license": "Apache 2.0",
+    "released": "Late 2024",
+    "architecture": "AsymmDiT + AsymmVAE",
+    "parameters": "10B",
+    "maxResolution": "480p (720p coming)",
+    "maxDuration": "5.4s",
+    "fps": "30",
+    "nativeAudio": false,
+    "comfyUISupport": true,
+    "finetuneable": true,
+    "minVRAM": "40GB+ (A100/H100)",
+    "costPerSecond": "$0.33/clip",
+    "inputsSupported": "T2V",
+    "tier": "B",
+    "onFloyo": false,
+    "scores": {
+      "quality": 7.5,
+      "motion": 7,
+      "speed": 5,
+      "control": 6,
+      "audio": 0,
+      "value": 6
+    },
+    "strengths": [
+      "Best photorealism in open source",
+      "Apache 2.0",
+      "LoRA support",
+      "128:1 VAE"
+    ],
+    "weaknesses": [
+      "480p only",
+      "needs A100/H100",
+      "5.4s max",
+      "weak on stylized"
+    ],
+    "bestFor": [
+      "Photorealistic clips",
+      "fine-tuning",
+      "research",
+      "permissive commercial use"
+    ],
+    "verdict": "Most permissive large-scale open model. Ideal for custom pipelines.",
+    "workflows": []
+  },
+  {
+    "id": "skyreels-v2",
+    "name": "SkyReels V2",
+    "version": "V2",
+    "maker": "Skywork AI",
+    "sourceType": "Open Source",
+    "license": "Open Source",
+    "released": "Jan 2026",
+    "architecture": "AR Diffusion-Forcing",
+    "parameters": "14B",
+    "maxResolution": "720p",
+    "maxDuration": "30s+ (infinite)",
+    "fps": "24",
+    "nativeAudio": false,
+    "comfyUISupport": false,
+    "finetuneable": true,
+    "minVRAM": "40GB+ (A100/H100)",
+    "costPerSecond": "Self-host",
+    "inputsSupported": "T2V, I2V",
+    "tier": "A",
+    "onFloyo": false,
+    "scores": {
+      "quality": 8,
+      "motion": 8.5,
+      "speed": 5.5,
+      "control": 7,
+      "audio": 0,
+      "value": 7
+    },
+    "strengths": [
+      "First infinite-length open model",
+      "10M+ film/TV training",
+      "best open human faces"
+    ],
+    "weaknesses": [
+      "Heavy GPU req",
+      "no ComfyUI",
+      "newer community",
+      "720p cap"
+    ],
+    "bestFor": [
+      "Long-form AI films",
+      "human-centric content",
+      "short films and ads"
+    ],
+    "verdict": "First open model for infinite-length video. Best human rendering in open source.",
+    "workflows": []
+  },
+  {
+    "id": "cogvideox-5b",
+    "name": "CogVideoX-5B",
+    "version": "5B",
+    "maker": "Tsinghua / Zhipu AI",
+    "sourceType": "Open Source",
+    "license": "Apache 2.0",
+    "released": "2025",
+    "architecture": "Expert Transformer",
+    "parameters": "5B",
+    "maxResolution": "720p (1360x768)",
+    "maxDuration": "6s",
+    "fps": "8",
+    "nativeAudio": false,
+    "comfyUISupport": true,
+    "finetuneable": true,
+    "minVRAM": "12GB",
+    "costPerSecond": "Self-host",
+    "inputsSupported": "T2V",
+    "tier": "C",
+    "onFloyo": false,
+    "scores": {
+      "quality": 5.5,
+      "motion": 6,
+      "speed": 8,
+      "control": 5,
+      "audio": 0,
+      "value": 9
+    },
+    "strengths": [
+      "Lightweight 12GB",
+      "Apache 2.0",
+      "LoRA + DDIM Inverse",
+      "ModelScope integration"
+    ],
+    "weaknesses": [
+      "Low FPS (8fps)",
+      "6s max",
+      "older architecture"
+    ],
+    "bestFor": [
+      "Budget prototyping",
+      "research",
+      "motion-heavy short clips"
+    ],
+    "verdict": "Lightweight entry point. 12GB GPU, Apache 2.0. Most accessible for experimentation.",
+    "workflows": []
+  },
+  {
+    "id": "wan-2-6",
+    "name": "Wan 2.6",
+    "version": "2.6",
+    "maker": "Alibaba (Tongyi Lab)",
+    "sourceType": "Closed Source",
+    "license": "Alibaba Commercial",
+    "released": "Feb 2026",
+    "architecture": "DiT + MoE (evolved)",
+    "parameters": "Undisclosed",
+    "maxResolution": "720p / 1080p",
+    "maxDuration": "Up to 15s",
+    "fps": "24",
+    "nativeAudio": true,
+    "comfyUISupport": true,
+    "finetuneable": false,
+    "minVRAM": "Cloud / API",
+    "costPerSecond": "$0.05",
+    "inputsSupported": "T2V, I2V, Reference-to-Video (1-3 refs via @Video1/@Video2/@Video3)",
+    "tier": "S",
+    "onFloyo": true,
+    "scores": {
+      "quality": 8,
+      "motion": 8.5,
+      "speed": 9.5,
+      "control": 7.5,
+      "audio": 7,
+      "value": 9
+    },
+    "strengths": [
+      "Fastest inference",
+      "native audio with synced dialogue",
+      "reference-to-video for character consistency (1-3 video refs)",
+      "multi-shot with structured prompt syntax [0-3s]/[3-5s]",
+      "expanded aspect ratios (16:9, 9:16, 1:1, 4:3, 3:4)",
+      "LLM-based prompt expansion",
+      "15s duration",
+      "audio-to-visual alignment (upload soundtrack)"
+    ],
+    "weaknesses": [
+      "Closed source (not self-hostable)",
+      "reference-to-video limited to 5/10s (no 15s)",
+      "800 char prompt limit",
+      "multi-shot timing depends on prompt expansion quality",
+      "check regional license terms"
+    ],
+    "bestFor": [
+      "Cross-platform content (all aspect ratios)",
+      "character-consistent narratives (ref-to-video)",
+      "audio-synced social content",
+      "multilingual production",
+      "commercial video at scale"
+    ],
+    "verdict": "Closed-source evolution of Wan. Adds reference-to-video for character consistency, multi-shot narratives, 5 aspect ratios, and 15s duration. Native audio with synced dialogue carried over from 2.5.",
+    "workflows": [
+      {
+        "name": "Wan 2.6 Reference to Video",
+        "type": "Ref-to-Video",
+        "url": "https://www.floyo.ai/workflows/wan-2-6-reference-to-video-0t6nnv8esua5",
+        "description": "Generate video using 1-3 video references for character consistency. Reference subjects using @Video1/@Video2/@Video3 syntax in prompts. The model maintains each subject's identity throughout the generated video.",
+        "runs": "",
+        "status": "Live"
+      }
+    ]
+  },
+  {
+    "id": "kling-3-0",
+    "name": "Kling 3.0",
+    "version": "3.0",
+    "maker": "Kuaishou",
+    "sourceType": "Closed Source",
+    "license": "Commercial (paid tiers)",
+    "released": "Feb 5, 2026",
+    "architecture": "Unified Multimodal (MVL) / Two models: V3 (prompt-driven) + O3 (reference-driven)",
+    "parameters": "Undisclosed",
+    "maxResolution": "Native 4K (3840x2160) at up to 60fps",
+    "maxDuration": "3-15s (up to 6 shots per generation)",
+    "fps": "Up to 60",
+    "nativeAudio": true,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "$0.10",
+    "inputsSupported": "T2V, I2V, Multi-shot (6 cuts), Element References (O3), Video Reference (O3)",
+    "tier": "S",
+    "onFloyo": false,
+    "scores": {
+      "quality": 9.5,
+      "motion": 9.5,
+      "speed": 6,
+      "control": 8.5,
+      "audio": 7,
+      "value": 7
+    },
+    "strengths": [
+      "TWO MODELS: V3 = prompt-driven (3+ characters, AI Director, structured storytelling)",
+      "O3 = reference-driven (Elements 3.0, video character refs 3-8s, Signature Voice binding). Native 4K at 60fps. Multi-shot up to 6 camera cuts with per-shot control (duration, size, angle, camera movement). Native lip-sync in EN/CN/JP/KR/ES + dialects + bilingual code-switching. Motion Brush for drawn motion paths. Best text rendering in AI video (signs, logos, price tags). Character identity lock across shots. Start/end frame conditioning."
+    ],
+    "weaknesses": [
+      "Multi-shot not compatible with first/last frame feature. O3 optimized for 1-2 elements (V3 better for 3+ characters). Credit pricing: 12 credits/sec for 1080p+audio, 9 credits/sec for 720p+audio. Audio can be less refined than Veo. Transitions between shots can be clunky. 15s max duration."
+    ],
+    "bestFor": [
+      "V3: Experimental narratives, populated group scenes (3+ chars), rapid ideation from scripts. O3: Brand advertising (product/character identity lock), serialized narratives (consistent face+voice across episodes), e-commerce (readable text+product locking). Both: multilingual commercial content, social media hooks."
+    ],
+    "verdict": "Two models in one: V3 is the prompt-driven AI Director for creative freedom. O3 is the reference-driven consistency engine for commercial production. Both share native 4K, multi-shot, and 5-language audio.",
+    "workflows": []
+  },
+  {
+    "id": "runway-gen-4-5",
+    "name": "Runway Gen-4.5",
+    "version": "Gen-4.5",
+    "maker": "Runway",
+    "sourceType": "Closed Source",
+    "license": "Commercial (subscription)",
+    "released": "Dec 2025",
+    "architecture": "Proprietary DiT",
+    "parameters": "Undisclosed",
+    "maxResolution": "1080p (upscaled 4K)",
+    "maxDuration": "10s clips",
+    "fps": "24-30",
+    "nativeAudio": true,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "~$0.15 (credits)",
+    "inputsSupported": "T2V, I2V, References",
+    "tier": "S",
+    "onFloyo": false,
+    "scores": {
+      "quality": 9,
+      "motion": 8,
+      "speed": 9,
+      "control": 9.5,
+      "audio": 7.5,
+      "value": 6
+    },
+    "strengths": [
+      "Best character consistency (References)",
+      "Motion Brush",
+      "30-90s gen",
+      "30+ tools",
+      "Act-Two mocap"
+    ],
+    "weaknesses": [
+      "10s clip limit",
+      "opaque credits",
+      "T2V inconsistent without guidance"
+    ],
+    "bestFor": [
+      "Brand campaigns",
+      "character-consistent series",
+      "agency production"
+    ],
+    "verdict": "The creative director's tool. Industry benchmark for character consistency.",
+    "workflows": []
+  },
+  {
+    "id": "veo-3-1",
+    "name": "Veo 3.1",
+    "version": "3.1",
+    "maker": "Google DeepMind",
+    "sourceType": "Closed Source",
+    "license": "Commercial (subscription)",
+    "released": "Jan 2026",
+    "architecture": "Proprietary (state-of-art T2V, I2V, T2A+V)",
+    "parameters": "Undisclosed",
+    "maxResolution": "1080p and 4K",
+    "maxDuration": "8s base (extendable via scene extension)",
+    "fps": "24-30",
+    "nativeAudio": true,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "$0.20",
+    "inputsSupported": "T2V, I2V (ingredients-to-video), Style Reference, Character Reference, Scene Extension, First+Last Frame, Outpainting, Add/Remove Object, Camera Controls, Motion Controls, Character Controls (body/face/voice drive)",
+    "tier": "S",
+    "onFloyo": true,
+    "scores": {
+      "quality": 9,
+      "motion": 8.5,
+      "speed": 7,
+      "control": 7,
+      "audio": 10,
+      "value": 5
+    },
+    "strengths": [
+      "Best native audio (dialogue + SFX + ambient + music, generated natively in same pass). State-of-art T2V per Meta MovieGenBench. Ingredients-to-video (1-3 reference images for scene/character/object). Style reference (match aesthetic from reference image). Character consistency across scenes. Scene extension with visual+audio consistency. First+last frame transitions. Outpainting for aspect ratio adaptation. Add/remove objects with physics-aware placement. Camera controls (dolly, zoom, pan). Motion controls (draw object paths). Character controls (body+face+voice drive animation). 1080p and 4K output. SynthID watermarking."
+    ],
+    "weaknesses": [
+      "8s base clips (needs scene extension for longer). Most expensive per second ($0.20). Short speech segments still being refined. Cloud-only (no self-hosting). No open weights. Limited to Google ecosystem (Gemini, Flow, AI Studio, Vertex AI)."
+    ],
+    "bestFor": [
+      "Audio-native cinematic content. Dialogue scenes with natural lip sync. Sound design-heavy pieces. Cinematic one-takes with ambient audio. Style-matched content (reference image). Character-consistent series. Professional 4K deliverables. VFX (add/remove objects, outpainting)."
+    ],
+    "verdict": "The most complete video generation system. Native audio, ingredients-to-video, style matching, character consistency, scene extension, object manipulation, camera/motion controls. State-of-art on MovieGenBench. The Swiss army knife of AI video, but at a premium.",
+    "workflows": [
+      {
+        "name": "Veo 3.1 Image to Video (First + Last Frame)",
+        "type": "I2V",
+        "url": "https://www.floyo.ai/workflows/veo-3-1-image-to-video-first-frame-a-j70sj5ytcdwe",
+        "description": "Generate video from a first frame image with an optional last frame to lock start and end points. Veo 3.1 fills in the motion between them with native audio. Supports cinematic transitions and smooth interpolation between keyframes.",
+        "runs": "1.5k",
+        "status": "Live"
+      }
+    ]
+  },
+  {
+    "id": "sora-2",
+    "name": "Sora 2",
+    "version": "2.0",
+    "maker": "OpenAI",
+    "sourceType": "Closed Source",
+    "license": "Commercial (subscription)",
+    "released": "Sep 2025",
+    "architecture": "DiT",
+    "parameters": "Undisclosed",
+    "maxResolution": "1080p",
+    "maxDuration": "15-25s",
+    "fps": "24-30",
+    "nativeAudio": false,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "$0.15",
+    "inputsSupported": "T2V, I2V, Extensions",
+    "tier": "A",
+    "onFloyo": true,
+    "scores": {
+      "quality": 8.5,
+      "motion": 9,
+      "speed": 7,
+      "control": 8,
+      "audio": 0,
+      "value": 6.5
+    },
+    "strengths": [
+      "Best physics accuracy",
+      "multi-shot Extensions",
+      "strong prompt adherence",
+      "good hands"
+    ],
+    "weaknesses": [
+      "No native audio",
+      "finger artifacts",
+      "limited availability",
+      "watermark default"
+    ],
+    "bestFor": [
+      "Physics-heavy scenes",
+      "product demos",
+      "multi-shot storytelling"
+    ],
+    "verdict": "The physics engine. Best cause-and-effect simulation in the field.",
+    "workflows": [
+      {
+        "name": "Sora 2 Pro Image to Video",
+        "type": "I2V",
+        "url": "https://www.floyo.ai/workflows/sora2-pro-image-to-video-elevate-eve-4e57bkvnde8u",
+        "description": "Animate still images into video using Sora 2 Pro. The model preserves the composition and subject identity from the source image while adding physics-accurate motion and cinematic dynamics.",
+        "runs": "",
+        "status": "Live"
+      },
+      {
+        "name": "Sora 2 Watermark Remover + FlashSV",
+        "type": "Post-processing",
+        "url": "https://www.floyo.ai/workflows/sora-2-watermark-remover-and-flashsv-bnh4gchor3et",
+        "description": "Remove Sora 2 watermarks from generated video and apply FlashSV processing for cleaner output suitable for production use.",
+        "runs": "",
+        "status": "Live"
+      }
+    ]
+  },
+  {
+    "id": "seedance-2-0",
+    "name": "Seedance 2.0",
+    "version": "2.0",
+    "maker": "ByteDance",
+    "sourceType": "Closed Source",
+    "license": "Commercial (paid tiers)",
+    "released": "Feb 2026",
+    "architecture": "Unified AV Joint Gen",
+    "parameters": "Undisclosed",
+    "maxResolution": "1080p",
+    "maxDuration": "10-15s",
+    "fps": "24",
+    "nativeAudio": true,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "$0.14",
+    "inputsSupported": "T2V, I2V, Multi-modal (12 files)",
+    "tier": "A",
+    "onFloyo": false,
+    "scores": {
+      "quality": 8,
+      "motion": 8.5,
+      "speed": 7,
+      "control": 9,
+      "audio": 8.5,
+      "value": 7
+    },
+    "strengths": [
+      "12-file multimodal input",
+      "camera replication",
+      "@ mention system",
+      "8+ language lip-sync"
+    ],
+    "weaknesses": [
+      "No photorealistic face uploads",
+      "newer platform",
+      "limited integrations"
+    ],
+    "bestFor": [
+      "Music videos",
+      "reference-driven production",
+      "brand campaigns"
+    ],
+    "verdict": "The reference-driven director's tool. Camera replication is unique.",
+    "workflows": []
+  },
+  {
+    "id": "hailuo-2-3",
+    "name": "Hailuo 2.3",
+    "version": "2.3",
+    "maker": "MiniMax",
+    "sourceType": "Closed Source",
+    "license": "Commercial (subscription)",
+    "released": "Oct 2025",
+    "architecture": "NCR Framework",
+    "parameters": "Undisclosed",
+    "maxResolution": "1080p",
+    "maxDuration": "10s",
+    "fps": "24-30",
+    "nativeAudio": false,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "~$0.25/clip",
+    "inputsSupported": "T2V, I2V, S2V (subject ref)",
+    "tier": "A",
+    "onFloyo": false,
+    "scores": {
+      "quality": 8,
+      "motion": 8,
+      "speed": 8,
+      "control": 7,
+      "audio": 0,
+      "value": 9
+    },
+    "strengths": [
+      "Best budget:quality ratio",
+      "extreme physics sim",
+      "anime/ink wash/CG styles",
+      "micro-expressions",
+      "S2V-01"
+    ],
+    "weaknesses": [
+      "Less known in West",
+      "10s max",
+      "no audio",
+      "fewer tutorials"
+    ],
+    "bestFor": [
+      "Budget creators",
+      "stylized content",
+      "e-commerce ads",
+      "social clips"
+    ],
+    "verdict": "The dark horse. Best quality-to-price ratio. Photorealistic to anime.",
+    "workflows": []
+  },
+  {
+    "id": "luma-ray-3",
+    "name": "Luma Ray 3",
+    "version": "Ray 3",
+    "maker": "Luma AI",
+    "sourceType": "Closed Source",
+    "license": "Commercial (subscription)",
+    "released": "Mar 2026",
+    "architecture": "3D-aware DiT",
+    "parameters": "Undisclosed",
+    "maxResolution": "4K (HDR EXR)",
+    "maxDuration": "5-9s",
+    "fps": "24",
+    "nativeAudio": false,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "~$0.50-1.00",
+    "inputsSupported": "T2V, I2V",
+    "tier": "A",
+    "onFloyo": false,
+    "scores": {
+      "quality": 9,
+      "motion": 7.5,
+      "speed": 7.5,
+      "control": 7,
+      "audio": 0,
+      "value": 5
+    },
+    "strengths": [
+      "Native HDR EXR (first)",
+      "superior 3D spatial depth",
+      "Ray 2 Flash 20x faster",
+      "loop function",
+      "NL editing"
+    ],
+    "weaknesses": [
+      "Short clips",
+      "most expensive",
+      "no audio",
+      "limited style range"
+    ],
+    "bestFor": [
+      "Cinematic establishing shots",
+      "B-roll",
+      "3D product viz",
+      "architecture",
+      "HDR pipelines"
+    ],
+    "verdict": "The spatial intelligence model. HDR output for pro ACES pipelines.",
+    "workflows": []
+  },
+  {
+    "id": "pika-2-5",
+    "name": "Pika 2.5",
+    "version": "2.5",
+    "maker": "Pika Labs",
+    "sourceType": "Closed Source",
+    "license": "Commercial (subscription)",
+    "released": "2026",
+    "architecture": "Proprietary",
+    "parameters": "Undisclosed",
+    "maxResolution": "1080p",
+    "maxDuration": "5-10s",
+    "fps": "24",
+    "nativeAudio": false,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "~$0.15",
+    "inputsSupported": "T2V, I2V, Pikaframes",
+    "tier": "B",
+    "onFloyo": false,
+    "scores": {
+      "quality": 7,
+      "motion": 7,
+      "speed": 9,
+      "control": 7.5,
+      "audio": 0,
+      "value": 7.5
+    },
+    "strengths": [
+      "Timeline + layer editor",
+      "Pikaframes keyframe control",
+      "fast iteration",
+      "beginner-friendly",
+      "loop/extend"
+    ],
+    "weaknesses": [
+      "Short clips",
+      "less cinematic",
+      "no audio"
+    ],
+    "bestFor": [
+      "Social media",
+      "rapid prototyping",
+      "beginner creators",
+      "quick iteration"
+    ],
+    "verdict": "The social media speed machine. Fastest idea-to-clip tool.",
+    "workflows": []
+  },
+  {
+    "id": "vidu-2-0",
+    "name": "Vidu 2.0",
+    "version": "2.0",
+    "maker": "Shengshu Tech",
+    "sourceType": "Closed Source",
+    "license": "Commercial",
+    "released": "2025",
+    "architecture": "U-ViT (DiT hybrid)",
+    "parameters": "Undisclosed",
+    "maxResolution": "1080p",
+    "maxDuration": "10s",
+    "fps": "24",
+    "nativeAudio": false,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "~$0.04",
+    "inputsSupported": "T2V, I2V",
+    "tier": "B",
+    "onFloyo": false,
+    "scores": {
+      "quality": 0,
+      "motion": 0,
+      "speed": 0,
+      "control": 0,
+      "audio": 0,
+      "value": 0
+    },
+    "strengths": [
+      "Fastest gen (<10s)",
+      "55% cheaper than avg",
+      "multi-entity consistency"
+    ],
+    "weaknesses": [
+      "Less known outside Asia",
+      "shorter clips"
+    ],
+    "bestFor": [
+      "Budget",
+      "fast turnaround",
+      "multi-character scenes"
+    ],
+    "verdict": "Fastest and cheapest. 10s generation, $0.04/sec.",
+    "workflows": []
+  },
+  {
+    "id": "pixverse-5-5",
+    "name": "PixVerse 5.5",
+    "version": "5.5",
+    "maker": "PixVerse",
+    "sourceType": "Closed Source",
+    "license": "Commercial",
+    "released": "2026",
+    "architecture": "Proprietary",
+    "parameters": "Undisclosed",
+    "maxResolution": "1080p",
+    "maxDuration": "30s",
+    "fps": "24",
+    "nativeAudio": false,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "TBD",
+    "inputsSupported": "T2V, I2V",
+    "tier": "B",
+    "onFloyo": false,
+    "scores": {
+      "quality": 0,
+      "motion": 0,
+      "speed": 0,
+      "control": 0,
+      "audio": 0,
+      "value": 0
+    },
+    "strengths": [
+      "30s 1080p generation",
+      "start + end frame control"
+    ],
+    "weaknesses": [
+      "Newer platform",
+      "limited info"
+    ],
+    "bestFor": [
+      "Social content",
+      "precise scene control"
+    ],
+    "verdict": "Emerging contender with start/end frame control.",
+    "workflows": []
+  },
+  {
+    "id": "adobe-firefly-video",
+    "name": "Adobe Firefly Video",
+    "version": "1.0",
+    "maker": "Adobe",
+    "sourceType": "Closed Source",
+    "license": "Commercial (subscription)",
+    "released": "Dec 2025",
+    "architecture": "Proprietary",
+    "parameters": "Undisclosed",
+    "maxResolution": "4K",
+    "maxDuration": "5-10s",
+    "fps": "24",
+    "nativeAudio": false,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "Credits",
+    "inputsSupported": "T2V, I2V",
+    "tier": "A",
+    "onFloyo": false,
+    "scores": {
+      "quality": 0,
+      "motion": 0,
+      "speed": 0,
+      "control": 0,
+      "audio": 0,
+      "value": 0
+    },
+    "strengths": [
+      "Only IP-safe model (trained on licensed content)",
+      "multi-model access",
+      "Adobe ecosystem"
+    ],
+    "weaknesses": [
+      "Short clips",
+      "slower generation"
+    ],
+    "bestFor": [
+      "Commercial-safe production",
+      "Adobe workflow integration"
+    ],
+    "verdict": "The only IP-indemnified model. Trained exclusively on licensed content.",
+    "workflows": []
+  },
+  {
+    "id": "kling-o1",
+    "name": "Kling O1",
+    "version": "O1",
+    "maker": "Kuaishou",
+    "sourceType": "Closed Source",
+    "license": "Commercial",
+    "released": "2026",
+    "architecture": "Unified model",
+    "parameters": "Undisclosed",
+    "maxResolution": "4K",
+    "maxDuration": "Variable",
+    "fps": "30",
+    "nativeAudio": true,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "TBD",
+    "inputsSupported": "T2V, I2V, edit, inpaint, style",
+    "tier": "S",
+    "onFloyo": false,
+    "scores": {
+      "quality": 0,
+      "motion": 0,
+      "speed": 0,
+      "control": 0,
+      "audio": 0,
+      "value": 0
+    },
+    "strengths": [
+      "Unified model: gen + edit + inpaint + style transfer in one",
+      "pioneering approach"
+    ],
+    "weaknesses": [
+      "Newer",
+      "pricing TBD"
+    ],
+    "bestFor": [
+      "All-in-one video workflows",
+      "studios wanting single model"
+    ],
+    "verdict": "The unified approach. One model for generation, editing, and style.",
+    "workflows": [
+      {
+        "name": "Kling Omni One Video to Video Edit",
+        "type": "V2V Edit",
+        "url": "https://www.floyo.ai/workflows/kling-omni-one-video-to-video-edit-hr99ca57xvg5",
+        "description": "Video-to-video editing using Kling Omni. Transform existing footage by restyling scenes, modifying elements, or adjusting visual properties while preserving the original motion and structure.",
+        "runs": "",
+        "status": "Live"
+      }
+    ]
+  },
+  {
+    "id": "higgsfield-studio",
+    "name": "Higgsfield Studio",
+    "version": "2.0",
+    "maker": "Higgsfield.ai",
+    "sourceType": "Closed Source",
+    "license": "Commercial (subscription)",
+    "released": "2026",
+    "architecture": "Multi-model aggregator",
+    "parameters": "N/A",
+    "maxResolution": "Varies by model",
+    "maxDuration": "Varies",
+    "fps": "Varies",
+    "nativeAudio": true,
+    "comfyUISupport": false,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "Subscription",
+    "inputsSupported": "T2V, I2V, multi-shot",
+    "tier": "Platform",
+    "onFloyo": false,
+    "scores": {
+      "quality": 0,
+      "motion": 0,
+      "speed": 0,
+      "control": 0,
+      "audio": 0,
+      "value": 0
+    },
+    "strengths": [
+      "Aggregates Kling, Sora, Veo, etc. in one sub",
+      "Cinema Studio",
+      "keyframing",
+      "director tools"
+    ],
+    "weaknesses": [
+      "Not a model, it's a platform",
+      "dependent on underlying models"
+    ],
+    "bestFor": [
+      "Prosumers wanting all models in one place",
+      "AI filmmakers"
+    ],
+    "verdict": "All-in-one aggregator. Every major model under one subscription.",
+    "workflows": []
+  },
+  {
+    "id": "open-sora-2-0",
+    "name": "Open-Sora 2.0",
+    "version": "2.0",
+    "maker": "HPC-AI Tech",
+    "sourceType": "Open Source",
+    "license": "Apache 2.0",
+    "released": "2025",
+    "architecture": "3D Autoencoder",
+    "parameters": "Undisclosed",
+    "maxResolution": "720p",
+    "maxDuration": "15s",
+    "fps": "24",
+    "nativeAudio": false,
+    "comfyUISupport": true,
+    "finetuneable": true,
+    "minVRAM": "40GB+",
+    "costPerSecond": "Self-host",
+    "inputsSupported": "T2V, I2V",
+    "tier": "B",
+    "onFloyo": false,
+    "scores": {
+      "quality": 0,
+      "motion": 0,
+      "speed": 0,
+      "control": 0,
+      "audio": 0,
+      "value": 0
+    },
+    "strengths": [
+      "Open source",
+      "good for research and learning",
+      "3D autoencoder"
+    ],
+    "weaknesses": [
+      "Needs high-end GPU",
+      "less polished than Wan/LTX"
+    ],
+    "bestFor": [
+      "Research",
+      "learning",
+      "custom builds"
+    ],
+    "verdict": "Research-grade open model. Good for understanding video gen internals.",
+    "workflows": [
+      {
+        "name": "Sora 2 Pro Image to Video",
+        "type": "I2V",
+        "url": "https://www.floyo.ai/workflows/sora2-pro-image-to-video-elevate-eve-4e57bkvnde8u",
+        "description": "Animate still images into video using Sora 2 Pro. The model preserves the composition and subject identity from the source image while adding physics-accurate motion and cinematic dynamics.",
+        "runs": "",
+        "status": "Live"
+      },
+      {
+        "name": "Sora 2 Watermark Remover + FlashSV",
+        "type": "Post-processing",
+        "url": "https://www.floyo.ai/workflows/sora-2-watermark-remover-and-flashsv-bnh4gchor3et",
+        "description": "Remove Sora 2 watermarks from generated video and apply FlashSV processing for cleaner output suitable for production use.",
+        "runs": "",
+        "status": "Live"
+      }
+    ]
+  },
+  {
+    "id": "wan-2-1",
+    "name": "Wan 2.1",
+    "version": "2.1",
+    "maker": "Alibaba (Tongyi Lab)",
+    "sourceType": "Open Source",
+    "license": "Apache 2.0",
+    "released": "Mar 2025",
+    "architecture": "Flow Matching DiT + 3D Causal VAE",
+    "parameters": "14B (also 1.3B variant)",
+    "maxResolution": "720p",
+    "maxDuration": "5s",
+    "fps": "24",
+    "nativeAudio": false,
+    "comfyUISupport": true,
+    "finetuneable": true,
+    "minVRAM": "8.19GB (1.3B) / 24GB+ (14B)",
+    "costPerSecond": "Self-host",
+    "inputsSupported": "T2V (14B/1.3B), I2V (14B), FLF2V, VACE, V2A",
+    "tier": "A",
+    "onFloyo": true,
+    "scores": {
+      "quality": 7,
+      "motion": 7,
+      "speed": 8.5,
+      "control": 6.5,
+      "audio": 0,
+      "value": 10
+    },
+    "strengths": [
+      "SOTA open-source at launch",
+      "1.3B model runs on any consumer GPU (8.19GB VRAM)",
+      "first video model with Chinese + English text generation",
+      "Wan-VAE encodes unlimited-length 1080P",
+      "T2V/I2V/Video Editing/T2I/V2A all supported",
+      "14B and 1.3B sizes",
+      "VACE for video editing",
+      "FLF2V for first-last-frame"
+    ],
+    "weaknesses": [
+      "720p max",
+      "5s duration",
+      "1.3B quality limited",
+      "no native audio generation",
+      "superseded by 2.2 on quality"
+    ],
+    "bestFor": [
+      "Budget local deployment",
+      "consumer GPU workflows",
+      "academic research",
+      "Chinese + English text-in-video",
+      "video editing (VACE)"
+    ],
+    "verdict": "The foundation that started it all. 1.3B variant runs on virtually any GPU. First open model to beat closed-source across benchmarks.",
+    "workflows": []
+  },
+  {
+    "id": "ltx-2",
+    "name": "LTX-2",
+    "version": "2.0",
+    "maker": "Lightricks",
+    "sourceType": "Open Source",
+    "license": "Apache 2.0 (<$10M rev)",
+    "released": "Jan 2026",
+    "architecture": "DiT + 3D Causal VAE",
+    "parameters": "19B (14B video + 5B audio)",
+    "maxResolution": "4K",
+    "maxDuration": "20s",
+    "fps": "Up to 50",
+    "nativeAudio": true,
+    "comfyUISupport": true,
+    "finetuneable": true,
+    "minVRAM": "12GB+ (distilled) / 24GB+ (full)",
+    "costPerSecond": "$0.04",
+    "inputsSupported": "T2V, I2V, V2V, Audio-to-Video, Depth, OpenPose, Camera Control",
+    "tier": "A",
+    "onFloyo": true,
+    "scores": {
+      "quality": 8,
+      "motion": 7.5,
+      "speed": 8,
+      "control": 8,
+      "audio": 6,
+      "value": 9.5
+    },
+    "strengths": [
+      "19B params (14B video + 5B audio)",
+      "native 4K at 50fps",
+      "first open model with unified audio-video",
+      "30 cinematic camera moves",
+      "depth-aware generation",
+      "OpenPose motion control",
+      "style LoRA",
+      "T2V/I2V/V2V all supported",
+      "NVFP8 quantized (30% smaller, 2x faster)"
+    ],
+    "weaknesses": [
+      "Superseded by 2.3 on detail and audio quality",
+      "LoRAs not compatible with 2.3",
+      "texture drift every 8-10 frames",
+      "in-scene text issues"
+    ],
+    "bestFor": [
+      "Production video pipelines",
+      "camera-controlled generation",
+      "depth/pose-driven workflows",
+      "budget 4K content",
+      "ComfyUI power users"
+    ],
+    "verdict": "The predecessor to 2.3. 19B params, native 4K + audio, 30 camera moves. Still excellent and widely deployed.",
+    "workflows": [
+      {
+        "name": "LTX 2 19B Fast Text to Video",
+        "type": "T2V",
+        "url": "https://www.floyo.ai/workflows/ltx-2-19b-fast-for-text-to-video--ma4wefu009pe",
+        "description": "Text-to-video generation using LTX 2's 19B Fast checkpoint. Optimized for speed over maximum quality, suited for rapid iteration and prototyping. Open source model running on Floyo's cloud infrastructure.",
+        "runs": "3.6k",
+        "status": "Live"
+      }
+    ]
+  },
+  {
+    "id": "grok-imagine",
+    "name": "Grok Imagine",
+    "version": "1.0",
+    "maker": "xAI",
+    "sourceType": "Closed Source",
+    "license": "Commercial (X Premium / API)",
+    "released": "Feb 2026",
+    "architecture": "Aurora autoregressive engine (proprietary)",
+    "parameters": "Undisclosed (trained on 110K GB200 GPUs)",
+    "maxResolution": "720p",
+    "maxDuration": "6-15s",
+    "fps": "24",
+    "nativeAudio": true,
+    "comfyUISupport": true,
+    "finetuneable": false,
+    "minVRAM": "Cloud only",
+    "costPerSecond": "$0.05/sec",
+    "inputsSupported": "T2V, I2V, V2V (edit), Reference-to-Video, Video Extend",
+    "tier": "A",
+    "onFloyo": true,
+    "scores": {
+      "quality": 8,
+      "motion": 7.5,
+      "speed": 9,
+      "control": 7.5,
+      "audio": 7.5,
+      "value": 9
+    },
+    "strengths": [
+      "Best-in-class instruction following for video",
+      "native audio (dialogue + ambient + SFX)",
+      "7 aspect ratios (16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 1:1)",
+      "fastest generation speed + lowest latency",
+      "$0.05/sec (budget-friendly)",
+      "video editing (restyle, add/remove objects, motion control)",
+      "video extend from last frame",
+      "natural conversational dialogue with lip-sync",
+      "1.245 billion videos generated in first 30 days",
+      "motion-first architecture (stable camera, fewer glitches)"
+    ],
+    "weaknesses": [
+      "720p cap (no 1080p/4K)",
+      "quality degrades after 2-3 chained extensions",
+      "no visible watermarks (brand safety concern)",
+      "content moderation controversies",
+      "no open weights",
+      "X Premium required for consumer access"
+    ],
+    "bestFor": [
+      "Fast iteration and prototyping",
+      "social media clips",
+      "product teasers",
+      "cinematic storyboarding",
+      "budget-conscious production",
+      "video editing workflows",
+      "cross-platform content (7 aspect ratios)"
+    ],
+    "verdict": "The speed king. Fastest generation at the lowest cost with native audio. Built for rapid creative iteration, not pixel-perfect cinema.",
+    "workflows": [
+      {
+        "name": "Grok Imagine Image to Video",
+        "type": "I2V",
+        "url": "https://www.floyo.ai/workflows/grok-imagine-for-image-to-video-ar45z0gkmktb",
+        "description": "Turn still images into video using xAI's Grok Imagine model. Fast generation with native audio, stable camera movements, and natural motion. Supports cinematic camera instructions and style direction in prompts.",
+        "runs": "2.2k",
+        "status": "Live"
+      }
+    ]
+  }
+]

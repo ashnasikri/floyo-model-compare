@@ -1,0 +1,4 @@
+{
+  "buildCommand": "node scripts/parse-xlsx.mjs && next build",
+  "framework": "nextjs"
+}
