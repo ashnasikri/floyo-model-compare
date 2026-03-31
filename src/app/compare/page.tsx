@@ -7,27 +7,55 @@ import type { Model } from "@/types/model";
 // Per-model accent colors
 const MODEL_COLORS = ["#AF7FF4", "#60c4a0", "#ffc15e"] as const;
 
-const SCORE_KEYS = [
-  { key: "quality" as const, label: "Quality" },
-  { key: "motion" as const, label: "Motion" },
-  { key: "speed" as const, label: "Speed" },
-  { key: "control" as const, label: "Control" },
-  { key: "audio" as const, label: "Audio" },
-  { key: "value" as const, label: "Value" },
-];
+// ── Spec winner helpers ────────────────────────────────────────────────────
+function parseResolution(s: string): number {
+  const l = s.toLowerCase();
+  if (l.includes("4k") || l.includes("2160")) return 4;
+  if (l.includes("2k") || l.includes("1440")) return 2.5;
+  if (l.includes("1080")) return 2;
+  if (l.includes("720")) return 1.5;
+  if (l.includes("480")) return 1;
+  return 0;
+}
+function parseDuration(s: string): number {
+  const nums = s.match(/\d+\.?\d*/g)?.map(Number) ?? [];
+  if (!nums.length) return 0;
+  const max = Math.max(...nums);
+  return s.toLowerCase().includes("min") ? max * 60 : max;
+}
+function parseFPS(s: string): number {
+  const nums = s.match(/\d+/g)?.map(Number) ?? [];
+  return nums.length ? Math.max(...nums) : 0;
+}
+function higherWins(getValue: (m: Model) => number) {
+  return (ms: Model[]): string | null => {
+    const vals = ms.map((m) => ({ id: m.id, val: getValue(m) }));
+    const max = Math.max(...vals.map((v) => v.val));
+    if (max === 0) return null;
+    const winners = vals.filter((v) => v.val === max);
+    return winners.length === 1 ? winners[0].id : null;
+  };
+}
+function boolWins(getValue: (m: Model) => boolean) {
+  return (ms: Model[]): string | null => {
+    const yeses = ms.filter((m) => getValue(m));
+    return yeses.length === 1 ? yeses[0].id : null;
+  };
+}
+// ──────────────────────────────────────────────────────────────────────────
 
-const SPEC_ROWS: { label: string; render: (m: Model) => React.ReactNode; highlight?: (m: Model) => boolean }[] = [
+const SPEC_ROWS: { label: string; render: (m: Model) => React.ReactNode; highlight?: (m: Model) => boolean; getWinner?: (models: Model[]) => string | null }[] = [
   { label: "Maker", render: (m) => m.maker },
   { label: "Source Type", render: (m) => m.sourceType, highlight: (m) => m.sourceType === "Open Source" },
   { label: "License", render: (m) => m.license },
   { label: "Architecture", render: (m) => m.architecture },
   { label: "Parameters", render: (m) => m.parameters },
-  { label: "Max Resolution", render: (m) => m.maxResolution },
-  { label: "Max Duration", render: (m) => m.maxDuration },
-  { label: "FPS", render: (m) => m.fps },
-  { label: "Native Audio", render: (m) => (m.nativeAudio ? "Yes" : "No"), highlight: (m) => m.nativeAudio },
-  { label: "ComfyUI Support", render: (m) => (m.comfyUISupport ? "Yes" : "No"), highlight: (m) => m.comfyUISupport },
-  { label: "Fine-tunable", render: (m) => (m.finetuneable ? "Yes" : "No"), highlight: (m) => m.finetuneable },
+  { label: "Max Resolution", render: (m) => m.maxResolution, getWinner: higherWins((m) => parseResolution(m.maxResolution)) },
+  { label: "Max Duration", render: (m) => m.maxDuration, getWinner: higherWins((m) => parseDuration(m.maxDuration)) },
+  { label: "FPS", render: (m) => m.fps, getWinner: higherWins((m) => parseFPS(m.fps)) },
+  { label: "Native Audio", render: (m) => (m.nativeAudio ? "Yes" : "No"), highlight: (m) => m.nativeAudio, getWinner: boolWins((m) => m.nativeAudio) },
+  { label: "ComfyUI Support", render: (m) => (m.comfyUISupport ? "Yes" : "No"), highlight: (m) => m.comfyUISupport, getWinner: boolWins((m) => m.comfyUISupport) },
+  { label: "Fine-tunable", render: (m) => (m.finetuneable ? "Yes" : "No"), highlight: (m) => m.finetuneable, getWinner: boolWins((m) => m.finetuneable) },
   { label: "Min VRAM", render: (m) => m.minVRAM },
   { label: "Cost / Second", render: (m) => m.costPerSecond },
   { label: "Inputs", render: (m) => m.inputsSupported },
@@ -117,68 +145,81 @@ export default function ComparePage({
           ))}
         </div>
 
-        {/* Scores section */}
-        <SectionHeader>Scores</SectionHeader>
-        <div className="rounded-xl border border-border overflow-hidden mb-10">
-          {SCORE_KEYS.map(({ key, label }) => (
-            <div
-              key={key}
-              className="grid border-b border-border last:border-b-0"
-              style={{ gridTemplateColumns: `140px repeat(${selected.length}, 1fr)` }}
-            >
-              <div className="px-4 py-3 flex items-center bg-surface">
-                <span className="font-mono text-[11px] text-text-sub">{label}</span>
+        {/* Quick verdict cards */}
+        <div className="grid gap-4 mb-10" style={{ gridTemplateColumns: `repeat(${selected.length}, 1fr)` }}>
+          {selected.map((model, i) => {
+            const items = model.bestFor
+              .filter((s) => !/self.?host|local\b/i.test(s))
+              .slice(0, 3);
+            const verdict = items.length
+              ? items.length === 1
+                ? items[0]
+                : `${items.slice(0, -1).join(", ")}, or ${items[items.length - 1]}`
+              : model.verdict ?? "";
+            return (
+              <div
+                key={model.id}
+                className="rounded-xl bg-surface p-4 border border-border"
+                style={{ borderLeft: `3px solid ${MODEL_COLORS[i]}` }}
+              >
+                <p
+                  className="font-mono text-[10px] font-bold uppercase tracking-wider mb-1.5"
+                  style={{ color: MODEL_COLORS[i] }}
+                >
+                  Pick {model.name} if…
+                </p>
+                <p className="font-sans text-xs text-text-sub leading-relaxed">
+                  {verdict.length ? `You want ${verdict.charAt(0).toLowerCase()}${verdict.slice(1)}.` : "—"}
+                </p>
               </div>
-              {selected.map((m, i) => {
-                const pct = Math.round((m.scores[key] / 10) * 100);
-                return (
-                  <div key={m.id} className="px-4 py-3 bg-bg flex items-center gap-3 border-l border-border">
-                    <div className="flex-1 h-2 bg-surface-2 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all"
-                        style={{ width: `${pct}%`, backgroundColor: MODEL_COLORS[i] }}
-                      />
-                    </div>
-                    <span
-                      className="font-mono text-xs font-bold w-6 text-right shrink-0"
-                      style={{ color: MODEL_COLORS[i] }}
-                    >
-                      {m.scores[key] === 0 ? "-" : m.scores[key]}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+            );
+          })}
         </div>
+
 
         {/* Specs table */}
         <SectionHeader>Specifications</SectionHeader>
         <div className="rounded-xl border border-border overflow-hidden mb-10">
-          {SPEC_ROWS.map((row) => (
-            <div
-              key={row.label}
-              className="grid border-b border-border last:border-b-0"
-              style={{ gridTemplateColumns: `140px repeat(${selected.length}, 1fr)` }}
-            >
-              <div className="px-4 py-2.5 flex items-center bg-surface">
-                <span className="font-mono text-[11px] text-text-sub">{row.label}</span>
+          {SPEC_ROWS.map((row) => {
+            const winnerId = row.getWinner?.(selected) ?? null;
+            return (
+              <div
+                key={row.label}
+                className="grid border-b border-border last:border-b-0"
+                style={{ gridTemplateColumns: `140px repeat(${selected.length}, 1fr)` }}
+              >
+                <div className="px-4 py-2.5 flex items-center bg-surface">
+                  <span className="font-mono text-[11px] text-text-sub">{row.label}</span>
+                </div>
+                {selected.map((m, i) => {
+                  const isWinner = winnerId === m.id;
+                  const isHighlighted = !isWinner && (row.highlight?.(m) ?? false);
+                  return (
+                    <div key={m.id} className="px-4 py-2.5 bg-bg border-l border-border flex items-center">
+                      {isWinner ? (
+                        <span
+                          className="font-mono text-xs font-bold px-2 py-0.5 rounded-full"
+                          style={{
+                            color: MODEL_COLORS[i],
+                            backgroundColor: `${MODEL_COLORS[i]}14`,
+                          }}
+                        >
+                          {String(row.render(m))}
+                        </span>
+                      ) : (
+                        <span
+                          className="font-mono text-xs"
+                          style={isHighlighted ? { color: MODEL_COLORS[i], fontWeight: 600 } : { color: "#a89fc0" }}
+                        >
+                          {String(row.render(m))}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-              {selected.map((m, i) => {
-                const isHighlighted = row.highlight?.(m) ?? false;
-                return (
-                  <div key={m.id} className="px-4 py-2.5 bg-bg border-l border-border flex items-center">
-                    <span
-                      className="font-mono text-xs"
-                      style={isHighlighted ? { color: MODEL_COLORS[i], fontWeight: 600 } : { color: "#a89fc0" }}
-                    >
-                      {String(row.render(m))}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Strengths & Trade-offs */}

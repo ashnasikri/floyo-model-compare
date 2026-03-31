@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { Model } from "@/types/model";
 import ModelCard from "./ModelCard";
 import CompareBar from "./CompareBar";
@@ -89,6 +90,19 @@ export default function BrowseClient({ models, initialFilter, initialSort }: Pro
             <h1 className="font-sans font-bold text-xl text-text-main leading-tight">
               AI Video Model Compare
             </h1>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="font-mono text-[10px] text-muted">Spec guides:</span>
+              <Link
+                href="/specs/fps"
+                className="font-mono text-[10px] text-muted hover:text-violet transition-colors"
+              >
+                FPS
+              </Link>
+              <span className="text-border text-[10px]">·</span>
+              <span className="font-mono text-[10px] text-muted/40">Resolution</span>
+              <span className="text-border text-[10px]">·</span>
+              <span className="font-mono text-[10px] text-muted/40">Duration</span>
+            </div>
           </div>
           <a
             href="https://floyo.ai"
