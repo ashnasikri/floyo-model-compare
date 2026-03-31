@@ -99,7 +99,12 @@ export default function BrowseClient({ models, initialFilter, initialSort }: Pro
                 FPS
               </Link>
               <span className="text-border text-[10px]">·</span>
-              <span className="font-mono text-[10px] text-muted/40">Resolution</span>
+              <Link
+                href="/specs/resolution"
+                className="font-mono text-[10px] text-muted hover:text-violet transition-colors"
+              >
+                Resolution
+              </Link>
               <span className="text-border text-[10px]">·</span>
               <span className="font-mono text-[10px] text-muted/40">Duration</span>
             </div>
